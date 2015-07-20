@@ -71,7 +71,7 @@ for op,value in opts:
 
 sftp.put(patchPath,GFS_SFTP_PATH+patchFile)
 
-stdin, stdout, stderr = client.exec_command("cd "+GFS_SFTP_PATH+" && tar -zxf /usr/local/app/newyiban/"+patchFile  )
+stdin, stdout, stderr = client.exec_command("cd "+GFS_SFTP_PATH+" && tar -zxf "+GFS_SFTP_PATH+patchFile  )
 print stdout.read()
 stdin, stdout, stderr = client.exec_command("rm "+GFS_SFTP_PATH+patchFile)
 print stdout.read()
