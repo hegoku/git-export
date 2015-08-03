@@ -46,56 +46,56 @@ if localPatch != '':
         print "Copy to local folder: "+localPatch
 
 if is_to_remote==True:
-    (status, output) = commands.getstatusoutput("git config --get gfs.sftp.path")
+    (status, output) = commands.getstatusoutput("git config --get gep.sftp.path")
     if(status!=0):
         print status,output
-        print "Config gfs.sftp.path doesn't exist"
+        print "Config gep.sftp.path doesn't exist"
         exit()
-    GFS_SFTP_PATH=output
+    GEP_SFTP_PATH=output
 
-    (status, output) = commands.getstatusoutput("git config --get gfs.sftp.host")
+    (status, output) = commands.getstatusoutput("git config --get gep.sftp.host")
     if(status!=0):
         print status,output
-        print "Config gfs.sftp.host doesn't exist"
+        print "Config gep.sftp.host doesn't exist"
         exit()
-    GFS_SFTP_HOST=output
+    GEP_SFTP_HOST=output
 
-    (status, output) = commands.getstatusoutput("git config --get gfs.sftp.port")
+    (status, output) = commands.getstatusoutput("git config --get gep.sftp.port")
     if(status!=0):
         print status,output
-        print "Config gfs.sftp.port doesn't exist"
+        print "Config gep.sftp.port doesn't exist"
         exit()
-    GFS_SFTP_PORT=int(output)
+    GEP_SFTP_PORT=int(output)
 
-    (status, output) = commands.getstatusoutput("git config --get gfs.sftp.username")
+    (status, output) = commands.getstatusoutput("git config --get gep.sftp.username")
     if(status!=0):
         print status,output
-        print "Config gfs.sftp.username doesn't exist"
+        print "Config gep.sftp.username doesn't exist"
         exit()
-    GFS_SFTP_USERNAME=output
+    GEP_SFTP_USERNAME=output
 
-    (status, output) = commands.getstatusoutput("git config --get gfs.sftp.password")
+    (status, output) = commands.getstatusoutput("git config --get gep.sftp.password")
     if(status!=0):
         print status,output
-        print "Config gfs.sftp.password doesn't exist"
+        print "Config gep.sftp.password doesn't exist"
         exit()
-    GFS_SFTP_PASSWORD=output
+    GEP_SFTP_PASSWORD=output
 
     client=ssh.SSHClient()
     client.set_missing_host_key_policy(ssh.AutoAddPolicy())
-    client.connect(GFS_SFTP_HOST, port=GFS_SFTP_PORT, username=GFS_SFTP_USERNAME, password=GFS_SFTP_PASSWORD)
+    client.connect(GEP_SFTP_HOST, port=GEP_SFTP_PORT, username=GEP_SFTP_USERNAME, password=GEP_SFTP_PASSWORD)
 
     sftp=client.open_sftp()
-    stdin, stdout, stderr = client.exec_command("cd "+GFS_SFTP_PATH)
+    stdin, stdout, stderr = client.exec_command("cd "+GEP_SFTP_PATH)
     stdout.read()
 
 
 
-    sftp.put(patchPath,GFS_SFTP_PATH+patchFile)
+    sftp.put(patchPath,GEP_SFTP_PATH+patchFile)
 
-    stdin, stdout, stderr = client.exec_command("cd "+GFS_SFTP_PATH+" && tar -zxf "+GFS_SFTP_PATH+patchFile  )
+    stdin, stdout, stderr = client.exec_command("cd "+GEP_SFTP_PATH+" && tar -zxf "+GEP_SFTP_PATH+patchFile  )
     print stdout.read()
-    stdin, stdout, stderr = client.exec_command("rm "+GFS_SFTP_PATH+patchFile)
+    stdin, stdout, stderr = client.exec_command("rm "+GEP_SFTP_PATH+patchFile)
     print stdout.read()
 
     print "Update success!"

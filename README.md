@@ -1,24 +1,74 @@
-##用法
+##Install
 
-在git项目里设置sftp属性：
+Copy `git-export.py` to a folder:
+
+```sh
+$ cp git-export.py ~/
+```
+
+Edit `~/.bashrc` to add alias:
+
+```sh
+alias git-export='/home/xx/git-export.py'
+```
+
+or to include PATH:
+
+```sh
+PATH=$PATH:/home/xx
+```
+
+##How to use
+
+Setting sftp configs in git project:
 
 ```sh
 $ cd git-project
-$ git config gfs.sftp.path '/var/www/'
-$ git config gfs.sftp.host '1.1.1.1'
-$ git config gfs.sftp.port 22
-$ git config gfs.sftp.username 'root'
-$ git config gfs.sftp.password 'xxxxxx'
+$ git config gep.sftp.path '/var/www/'
+$ git config gep.sftp.host '1.1.1.1'
+$ git config gep.sftp.port 22
+$ git config gep.sftp.username 'root'
+$ git config gep.sftp.password 'xxxxxx'
 ```
 
-当有一次新的commit产生后，想将这次的改动上传到服务器:
+`git-export` has three options:
 
-```sh
-$ gfs
+```
+-r upload to server
+-c choose staging area
+-o path_of_folder export files to local folder
 ```
 
-如果还想同时将改动的文件输出到某个文件夹:
+Just want to pack changes from new commit:
 
 ```sh
-$ gfs -o 文件夹路径
+$ git-export
+Patch file is: /tmp/xxx.tar.gz
+```
+
+then it will pack changes to `/tmp/xxx.tar.gz`
+
+Just want to pack changes from staging area:
+
+```sh
+$ git-export -c
+Patch file is: /tmp/xxx.tar.gz
+```
+
+To upload files added or modified in new commmit to server:
+
+```sh
+$ git-export -r
+```
+
+Both uploading new commit to server and exporting these files to local folder:
+
+```sh
+$ git-export -ro path_of_folder
+```
+
+To upload files added or modified in staging area to server:
+
+```sh
+$ git-export -cr
 ```
