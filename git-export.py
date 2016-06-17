@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-import ssh,os,time,commands,sys,getopt
+import paramiko as ssh,os,time,commands,sys,getopt
 
 localPatch=''
 is_from_cached=False
@@ -23,7 +23,7 @@ patchFile=str(time.time())+".tar.gz"
 patchPath="/tmp/"+patchFile
 
 if is_from_cached ==False:
-    comm="git archive -o "+patchPath+" HEAD $(git diff --name-only HEAD^ HEAD)"
+    comm="git archive -o "+patchPath+" HEAD $(git diff --name-status HEAD^ HEAD | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g')"
 else:
     comm="tar -zcvf "+patchPath+" $(git diff --cached --name-status | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g')"
 (status, output) = commands.getstatusoutput(comm)
