@@ -23,9 +23,12 @@ patchFile=str(time.time())+".tar.gz"
 patchPath="/tmp/"+patchFile
 
 if is_from_cached ==False:
-    comm="git archive -o "+patchPath+" HEAD $(git diff --name-status HEAD^ HEAD | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g')"
+    #comm="git archive -o "+patchPath+" HEAD $(git diff --name-status HEAD^ HEAD | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/&\'/g' | sed 's/$/&\'/g')"
+    (status, output) = commands.getstatusoutput("echo $(git diff --name-status HEAD^ HEAD | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/\"/g' | sed 's/$/\"/g')")
+    comm="tar -zcvf "+patchPath+" "+output
 else:
-    comm="tar -zcvf "+patchPath+" $(git diff --cached --name-status | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g')"
+    (status, output) = commands.getstatusoutput("echo $(git diff --cached --name-status | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/\"/g' | sed 's/$/\"/g')")
+    comm="tar -zcvf "+patchPath+" "+output
 (status, output) = commands.getstatusoutput(comm)
 if(status!=0):
     print status,output
