@@ -6,8 +6,10 @@ import paramiko as ssh,os,time,commands,sys,getopt
 localPatch=''
 is_from_cached=False
 is_to_remote=False
+old_commit='HEAD^'
+new_commit="HEAD"
 
-opts,args=getopt.getopt(sys.argv[1:],"rco:")
+opts,args=getopt.getopt(sys.argv[1:],"hrco:")
 for op,value in opts:
     if op=="-o":
         localPatch=os.path.abspath(value)
@@ -15,7 +17,17 @@ for op,value in opts:
         is_from_cached=True
     elif op=='-r':
         is_to_remote=True
-
+    elif op=='-h':
+        print "usage: git-export.py -h  show usage"
+        print "   or: git-export.py [-r] [-c] [-o <dir>]"
+        print "   or: git-export.py [-r] [-o <dir>] <commit>"
+        print "   or: git-export.py [-r] [-o <dir>] <old_commit> <new_commit>"
+        print ""
+        print "   -r\t\t upload to server"
+        print "   -c\t\t choose staging area"
+        print "   -o <dir>\t export files to local folder"
+        print ""
+        exit()
 
 gitWorkTree=os.popen("pwd").readline().strip('\n')
 os.popen("GIT_WORK_TREE="+gitWorkTree)
@@ -23,9 +35,16 @@ patchFile=str(time.time())+".tar.gz"
 patchPath="/tmp/"+patchFile
 
 if is_from_cached ==False:
+    if(len(args)==1):
+        old_commit=args[0]+"^"
+        new_commit=args[0]
+    elif(len(args)==2):
+        old_commit=args[0]
+        new_commit=args[1]
     #comm="git archive -o "+patchPath+" HEAD $(git diff --name-status HEAD^ HEAD | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/&\'/g' | sed 's/$/&\'/g')"
-    (status, output) = commands.getstatusoutput("echo $(git diff --name-status HEAD^ HEAD | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/\"/g' | sed 's/$/\"/g')")
-    comm="tar -zcvf "+patchPath+" "+output
+    (status, output) = commands.getstatusoutput("echo $(git diff --name-status "+old_commit+" "+new_commit+" | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/\"/g' | sed 's/$/\"/g')")
+    #comm="tar -zcvf "+patchPath+" "+output
+    comm="git archive -o "+patchPath+" "+new_commit+" "+output
 else:
     (status, output) = commands.getstatusoutput("echo $(git diff --cached --name-status | grep '^D' -v | sed 's/A\t//g' | sed 's/M\t//g' | sed 's/^/\"/g' | sed 's/$/\"/g')")
     comm="tar -zcvf "+patchPath+" "+output

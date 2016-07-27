@@ -72,3 +72,15 @@ To upload files added or modified in staging area to server:
 ```sh
 $ git-export -cr
 ```
+
+To export modified files between two commits:
+
+```sh
+$ git-export -o path_of_folder 0df32f 430fds
+```
+
+To export modified files from one commit:
+
+```sh
+$ git-export -o path_of_folder 0df32f
+```
