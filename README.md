@@ -1,4 +1,6 @@
-##Install
+[![LICENSE](https://img.shields.io/badge/license-Anti%20996-blue.svg)](https://github.com/996icu/996.ICU/blob/master/LICENSE)
+
+## Install
 
 Copy `git-export.py` to a folder:
 
@@ -18,7 +20,7 @@ or to include PATH:
 PATH=$PATH:/home/xx
 ```
 
-##How to use
+## How to use
 
 Setting sftp configs in git project:
 
